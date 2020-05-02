@@ -7,43 +7,33 @@
 ;
 ; Grupo: 2211
 ;
-
-
 ;**************************************************************************
-; DEFINICION DEL SEGMENTO DE DATOS
-DATOS SEGMENT
-DATOS ENDS
 
-;**************************************************************************
 ; DEFINICION DEL SEGMENTO DE CODIGO
 CODE SEGMENT
-        ASSUME CS: CODE, DS: DATOS, ES: EXTRA, SS: PILA
+        ASSUME CS: CODE
 
-        ; COMIENZO DEL PROCEDIMIENTO PRINCIPAL
+        ORG 256
+
         INICIO PROC NEAR
-        ; INICIALIZA LOS REGISTROS DE SEGMENTO CON SU VALOR
-        MOV AX, DATOS
-        MOV DS, AX
-        MOV AX, PILA
-        MOV SS, AX
-        MOV AX, EXTRA
-        MOV ES, AX
-        MOV SP, 64 ; CARGA EL PUNTERO DE PILA CON EL VALOR MAS ALTO
-        ; FIN DE LAS INICIALIZACIONES
 
-        ; ---------------------------------
-        ; COMIENZO DEL PROGRAMA
+            instalar: JMP instalador
 
+            ;Fin del programa
+            MOV AX, 4C00H
+            INT 21H
 
-
-        ; FIN DEL PROGRAMA
-        ; ---------------------------------
-
-        MOV AX, 4C00H
-        INT 21H
         INICIO ENDP
+
+        ;Rutina de servicio a la interrupción
+        rsi PROC FEAR
+        rsi ENDP
+
+        ;Instalador
+        instalador PROC
+        instalador ENDP
+
+
 ; FIN DEL SEGMENTO DE CODIGO
 CODE ENDS
-
-; FIN DEL PROGRAMA INDICANDO DONDE COMIENZA LA EJECUCION
 END INICIO
