@@ -20,27 +20,27 @@ inicio:
 
 ;Instalador de la rutina
 instalar:
-        instalar_40h PROC
+        instalar_60h PROC
             MOV AX, 0
             MOV ES, AX
             MOV AX, OFFSET rutina_int60
             MOV BX, CS
             CLI
-            MOV ES:[40H*4], AX
-            MOV ES:[40H*4+2], BX
+            MOV ES:[60H*4], AX
+            MOV ES:[60H*4+2], BX
             STI
-            MOV DX, OFFSET instalar_40h
+            MOV DX, OFFSET instalar_60h
             INT 27H
-        instalar_40h ENDP
+        instalar_60h ENDP
 
 ;Desinstalador de la rutina de INT 40h
 desinstalar:
-        desinstalar_40h PROC
+        desinstalar_60h PROC
             PUSH AX BX CX DS ES
 
             MOV CX, 0
             MOV DS, CX
-            MOV ES, DS:[40H*4+2]
+            MOV ES, DS:[60H*4+2]
             MOV BX, ES:[2CH]
 
             MOV AH, 49H
@@ -49,13 +49,13 @@ desinstalar:
             INT 21H
 
             CLI
-            MOV DS:[40H*4], CX
-            MOV DS:[40H*4+2], CX
+            MOV DS:[60H*4], CX
+            MOV DS:[60H*4+2], CX
             STI
 
             POP ES DS CX BX AX
             RET
-        desinstalar_40h ENDP
+        desinstalar_60h ENDP
 
 
 rutina_interrumpcion:
