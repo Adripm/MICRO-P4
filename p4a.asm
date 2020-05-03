@@ -93,7 +93,10 @@ argumento_i:
 
 no_args:
         ; Ejecucion sin argumentos
-        ; Mostrar
+
+        ; Mostrar estado de instalación del driver (instalado o no), grupo,
+        ; nombres de los componentes de la pareja e instrucciones de uso
+
         JMP fin
 
 fin:
