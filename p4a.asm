@@ -9,31 +9,35 @@
 ;
 ;**************************************************************************
 
-; DEFINICION DEL SEGMENTO DE CODIGO
-CODE SEGMENT
-        ASSUME CS: CODE
+CODIGO  SEGMENT
+
+        ASSUME CS:CODIGO
 
         ORG 256
 
-        INICIO PROC NEAR
+inicio:
+        JMP main
 
-            instalar: JMP instalador
+;Instalador de la rutina
+instalar:
+        instalar_40h PROC
 
-            ;Fin del programa
-            MOV AX, 4C00H
-            INT 21H
+        instalar_40h ENDP
 
-        INICIO ENDP
+;Desinstalador de la rutina de INT 40h
+desinstalar:
+        desinstalar_40h PROC
 
-        ;Rutina de servicio a la interrupción
-        rsi PROC FEAR
-        rsi ENDP
-
-        ;Instalador
-        instalador PROC
-        instalador ENDP
+        desinstalar_40h ENDP
 
 
-; FIN DEL SEGMENTO DE CODIGO
-CODE ENDS
-END INICIO
+rutina_interrumpcion:
+        rutina_int60 PROC FAR
+
+        rutina_int60 ENDP
+
+main: ;Código principal
+
+
+CODIGO  ENDS
+        END inicio
