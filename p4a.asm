@@ -18,6 +18,13 @@ CODIGO  SEGMENT
 inicio:
         JMP main
 
+rutina_interrupcion:
+        rutina_int60 PROC FAR
+
+            IRET
+
+        rutina_int60 ENDP
+
 ;Instalador de la rutina
 instalar:
         instalar_60h PROC
@@ -56,13 +63,6 @@ desinstalar:
             POP ES DS CX BX AX
             RET
         desinstalar_60h ENDP
-
-rutina_interrupcion:
-        rutina_int60 PROC FAR
-
-            IRET
-
-        rutina_int60 ENDP
 
 main:   ; Código principal
         ; Guarda los dos primeros caracteres de los argumentos en el registro AX
