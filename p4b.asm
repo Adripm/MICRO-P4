@@ -9,7 +9,7 @@ CODIGO  SEGMENT
 
 inicio:
 
-        ;INT 60H
+        INT 60H
 
         MOV AX, 4C00H
         INT 21H

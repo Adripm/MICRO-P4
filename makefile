@@ -1,5 +1,5 @@
 all: p4a.com p4b.exe
-#			 p4b.exe p4c.exe
+#	 p4a.com p4b.exe p4c.exe
 
 p4a.com: p4a.obj
 	tlink /t p4a
@@ -17,7 +17,6 @@ p4c.exe: p4c.obj
 	tlink /v p4c
 p4c.obj: p4c.asm
 	tasm /zi p4c.asm
-
 
 clean:
 	del *.obj

@@ -11,7 +11,7 @@
 
 CODIGO  SEGMENT
 
-        ASSUME CS:CODIGO, DS:CODIGO
+        ASSUME CS:CODIGO, DS:CODIGO, ES:CODIGO
 
         ORG 256
 
@@ -20,6 +20,11 @@ inicio:
 
 rutina_interrupcion:
         rutina_int60 PROC FAR
+
+            MOV BX, 2H
+            MOV AX, 1
+            MOV CX, 3
+            ADD AX, BX
 
             IRET
 
@@ -37,6 +42,11 @@ instalar:
             MOV ES:[60H*4+2], BX
             STI
             MOV DX, OFFSET instalar_60h
+
+            MOV AH, 9H
+            LEA DX, MSG4
+            INT 21H         ;Mensaje de instalación
+
             INT 27H
         instalar_60h ENDP
 
@@ -86,6 +96,11 @@ main:   ; Código principal
 argumento_d:
         ; Ejecucion con /D
         CALL desinstalar_60h
+
+        MOV AH, 9H
+        LEA DX, MSG3
+        INT 21H
+
         JMP fin
 
 argumento_i:
@@ -106,6 +121,26 @@ no_args:
         LEA DX, MSG2
         INT 21H
 
+        MOV AX, 0
+        MOV ES, AX
+
+        MOV AX, ES:[60H*4] ;
+        LEA BX, rutina_int60
+
+        CMP AX, BX
+        JE instalado
+
+        MOV AH, 9H
+        LEA DX, MSG6
+        INT 21H
+
+        JMP fin
+instalado:
+
+        MOV AH, 9H
+        LEA DX, MSG5
+        INT 21H
+
         JMP fin
 
 fin:
@@ -114,6 +149,10 @@ fin:
         ;DATOS
         MSG1 DB 'Adrian Palmero y Daniel Molano',0DH,0AH,"Grupo 2212",0DH,0AH,'$'
         MSG2 DB 'Argumentos:',0DH,0AH,"- /I: Instalar",0DH,0AH,"- /D: Desinstalar",0DH,0AH,'$'
+        MSG3 DB 'Desinstalacion terminada','$'
+        MSG4 DB 'Instalacion terminada','$'
+        MSG5 DB 'El driver se encuentra instalado','$'
+        MSG6 DB 'El driver no esta instalado','$'
 
 CODIGO  ENDS
         END inicio
