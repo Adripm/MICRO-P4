@@ -11,9 +11,9 @@
 
 CODIGO  SEGMENT
 
-        ASSUME CS:CODIGO
-
         ORG 256
+
+        ASSUME CS:CODIGO, DS:CODIGO
 
 inicio:
         JMP main
@@ -57,16 +57,15 @@ desinstalar:
             RET
         desinstalar_60h ENDP
 
-
 rutina_interrupcion:
         rutina_int60 PROC FAR
 
         rutina_int60 ENDP
 
 main:   ; Código principal
-
         ; Guarda los dos primeros caracteres de los argumentos en el registro AX
         ; (orden inverso)
+
         MOV AX, DS:[82H] ; Acceso al PSP
 
         ; Argumentos:   /D => AX = 442F
@@ -79,6 +78,7 @@ main:   ; Código principal
         JE argumento_i
 
         ; Si no existen los argumentos /D ni /I
+
         JMP no_args
 
 argumento_d:
@@ -96,12 +96,19 @@ no_args:
 
         ; Mostrar estado de instalación del driver (instalado o no), grupo,
         ; nombres de los componentes de la pareja e instrucciones de uso
+        MOV AH, 9H
+
+        LEA DX, MSG
+        INT 21H
 
         JMP fin
 
 fin:
         MOV AX, 4C00H ; Fin del programa
         INT 21H
+
+        ;DATOS
+        MSG DB 'Adrian Palmero y Daniel Molano',0DH,0AH,"Grupo 2212",0DH,0AH,'$'
 
 CODIGO  ENDS
         END inicio
