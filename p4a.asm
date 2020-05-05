@@ -21,11 +21,23 @@ inicio:
 rutina_interrupcion:
         rutina_int60 PROC FAR
 
-            MOV BX, 2H
-            MOV AX, 1
-            MOV CX, 3
-            ADD AX, BX
+            CMP AH, 12H
+            JE conv_dec_hex
+            CMP AH, 13H
+            JE conv_hex_dec
 
+            JMP fin_rutina_int60h
+
+conv_dec_hex:
+            ;obtener valor de ds:bx
+
+            JMP fin_rutina_int60h
+
+conv_hex_dec:
+
+            JMP fin_rutina_int60h
+
+fin_rutina_int60h:
             IRET
 
         rutina_int60 ENDP
