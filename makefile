@@ -1,4 +1,4 @@
-all: p4a.com
+all: p4a.com p4b.exe
 #			 p4b.exe p4c.exe
 
 p4a.com: p4a.obj

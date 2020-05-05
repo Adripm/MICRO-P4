@@ -11,9 +11,9 @@
 
 CODIGO  SEGMENT
 
-        ORG 256
-
         ASSUME CS:CODIGO, DS:CODIGO
+
+        ORG 256
 
 inicio:
         JMP main
@@ -60,6 +60,8 @@ desinstalar:
 rutina_interrupcion:
         rutina_int60 PROC FAR
 
+            IRET
+
         rutina_int60 ENDP
 
 main:   ; Código principal
@@ -98,17 +100,20 @@ no_args:
         ; nombres de los componentes de la pareja e instrucciones de uso
         MOV AH, 9H
 
-        LEA DX, MSG
+        LEA DX, MSG1
+        INT 21H
+
+        LEA DX, MSG2
         INT 21H
 
         JMP fin
 
 fin:
-        MOV AX, 4C00H ; Fin del programa
-        INT 21H
+        INT 20H ; Fin del programa
 
         ;DATOS
-        MSG DB 'Adrian Palmero y Daniel Molano',0DH,0AH,"Grupo 2212",0DH,0AH,'$'
+        MSG1 DB 'Adrian Palmero y Daniel Molano',0DH,0AH,"Grupo 2212",0DH,0AH,'$'
+        MSG2 DB 'Argumentos:',0DH,0AH,"- /I: Instalar",0DH,0AH,"- /D: Desinstalar",0DH,0AH,'$'
 
 CODIGO  ENDS
         END inicio
