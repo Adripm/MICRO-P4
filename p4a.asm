@@ -21,6 +21,8 @@ inicio:
 rutina_interrupcion:
         rutina_int60 PROC FAR
 
+            CADENA_FINAL DB 10 DUP (0)
+
             CMP AH, 12H
             JE conv_dec_hex
             CMP AH, 13H
@@ -30,6 +32,61 @@ rutina_interrupcion:
 
 conv_dec_hex:
             ;obtener valor de ds:bx
+
+            MOV DX, 0
+            MOV SI, 1
+    comienzo_bucle:
+            MOV AL, DS:[SI+BX+2] ; Salta los dos primeros caracteres
+            CMP AL, 36 ; $, salir de bucle
+            JE fin_bucle
+
+            SUB AX, 30H ; 48 ; Paso de ascii a numero decimal
+
+            MOV CX, DS:[BX+2] ; Tamaño de la cadena
+            SUB CX, SI
+            ADD CX, 1
+
+            CMP CX, 1
+            JE mul_1
+            CMP CX, 2
+            JE mul_2
+            CMP CX, 3
+            JE mul_3
+            CMP CX, 4
+            JE mul_4
+            CMP CX, 5
+            JE mul_5
+
+    mul_5:
+            MOV CX, 2710H
+            JMP mul_eff
+    mul_4:
+            MOV CX, 03E8H
+            JMP mul_eff
+    mul_3:
+            MOV CX, 064H
+            JMP mul_eff
+    mul_2:
+            MOV CX, 0AH
+            JMP mul_eff
+    mul_1:
+            MOV CX, 01H
+            JMP mul_eff
+
+    mul_eff:
+            MUL CX ; ax = ax * cx
+            ADD DX, AX
+
+            INC SI
+            JMP comienzo_bucle
+
+    fin_bucle:
+
+            ; Guardar resultado de DX en DS:CX
+
+            MOV BX, OFFSET CADENA_FINAL
+            MOV CX, BX
+            MOV WORD PTR[BX], DX
 
             JMP fin_rutina_int60h
 
@@ -159,7 +216,7 @@ fin:
         INT 20H ; Fin del programa
 
         ;DATOS
-        MSG1 DB 'Adrian Palmero y Daniel Molano',0DH,0AH,"Grupo 2212",0DH,0AH,'$'
+        MSG1 DB 'Adrian Palmero y Daniel Molano',0DH,0AH,"Grupo 2211",0DH,0AH,'$'
         MSG2 DB 'Argumentos:',0DH,0AH,"- /I: Instalar",0DH,0AH,"- /D: Desinstalar",0DH,0AH,'$'
         MSG3 DB 'Desinstalacion terminada','$'
         MSG4 DB 'Instalacion terminada','$'
