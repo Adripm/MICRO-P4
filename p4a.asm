@@ -21,6 +21,8 @@ inicio:
 rutina_interrupcion:
         rutina_int60 PROC FAR
 
+            PUSH AX BX DX SI
+
             CMP AH, 12H
             JE conv_dec_hex
             CMP AH, 13H
@@ -96,6 +98,9 @@ conv_hex_dec:
             JMP fin_rutina_int60h
 
 fin_rutina_int60h:
+
+            POP SI DX BX AX
+
             IRET
 
         rutina_int60 ENDP
