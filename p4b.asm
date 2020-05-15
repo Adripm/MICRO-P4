@@ -12,7 +12,7 @@
 ; DATA SEGMENT DEFINITION
 DATOS   SEGMENT
         CADENA DB 10 DUP (0)
-    	CLR_SCR DB 1BH,"[2","J$"
+		CLR_PANT 		DB 	1BH,"[2","J$"
 DATOS   ENDS
 
 ; STACK SEGMENT DEFINITION
@@ -68,12 +68,14 @@ INICIO:
         INT 60H         				;Aqui llamaremos a la interrupcion							*
 										;************************************************************
 
-        MOV AH, 9H
-        LEA DX, CLR_SCR
-        INT 21H
+		MOV DL,10h						;************************************************************
+		MOV AH,2						; Para reflejar mejor el numero transformado imprimiermos	*
+		INT 21H							; antes el caracter 10										*
+										;************************************************************
 
-        MOV DX, CX
-        INT 21H
+        MOV AH, 9H						;************************************************************
+        MOV DX, CX						; Mandamos a imprimir la cadena transformada				*
+        INT 21H							;************************************************************
 
         MOV AX, 4C00H
         INT 21H
