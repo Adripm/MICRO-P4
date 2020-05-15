@@ -2,3 +2,5 @@
 *.OBJ
 *.COM
 *.EXE
+makefile
+testt.asm

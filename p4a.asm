@@ -21,8 +21,6 @@ inicio:
 rutina_interrupcion:
         rutina_int60 PROC FAR
 
-            CADENA_FINAL DB 10 DUP (0)
-
             CMP AH, 12H
             JE conv_dec_hex
             CMP AH, 13H
@@ -34,28 +32,29 @@ conv_dec_hex:
             ;obtener valor de ds:bx
 
             MOV DX, 0
-            MOV SI, 1
+            MOV SI, 0
     comienzo_bucle:
+            MOV AX, 0
             MOV AL, DS:[SI+BX+2] ; Salta los dos primeros caracteres
-            CMP AL, 36 ; $, salir de bucle
+            CMP AL, 24H ; 36, $, salir de bucle
             JE fin_bucle
 
             SUB AX, 30H ; 48 ; Paso de ascii a numero decimal
 
-            MOV CX, DS:[BX+2] ; Tamaño de la cadena
+            MOV CX, 0
+            MOV CL, DS:[BX+1] ; Tamaño de la cadena
             SUB CX, SI
-            ADD CX, 1
 
-            CMP CX, 1
-            JE mul_1
-            CMP CX, 2
-            JE mul_2
-            CMP CX, 3
-            JE mul_3
-            CMP CX, 4
-            JE mul_4
             CMP CX, 5
             JE mul_5
+            CMP CX, 4
+            JE mul_4
+            CMP CX, 3
+            JE mul_3
+            CMP CX, 2
+            JE mul_2
+            CMP CX, 1
+            JE mul_1
 
     mul_5:
             MOV CX, 2710H
@@ -74,7 +73,9 @@ conv_dec_hex:
             JMP mul_eff
 
     mul_eff:
-            MUL CX ; ax = ax * cx
+            PUSH DX ; Guardar valor acumulador porque MUL usa DX
+            MUL CX  ; ax = ax * cx
+            POP DX
             ADD DX, AX
 
             INC SI
@@ -83,7 +84,7 @@ conv_dec_hex:
     fin_bucle:
 
             ; Guardar resultado de DX en DS:CX
-
+            CADENA_FINAL DB 10 DUP (0)
             MOV BX, OFFSET CADENA_FINAL
             MOV CX, BX
             MOV WORD PTR[BX], DX
