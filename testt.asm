@@ -68,7 +68,7 @@ process:
             MOV DX, 0
             MOV SI, 0
 
-            comienzo_bucle:
+        comienzo_bucle:
             MOV AX, 0
             MOV AL, DS:[SI+BX+2] ; Salta los dos primeros caracteres
             CMP AL, 24H  ; 36, SI $ Salir del bucle
@@ -117,10 +117,91 @@ process:
             JMP comienzo_bucle
 
         fin_bucle:
+
             CADENA_FINAL DB 10 DUP (0)
             MOV BX, OFFSET CADENA_FINAL
+
+            ; Obtener primeros dos digitos
+            MOV SI, 0
+            MOV CX, 0
+            MOV CH, DH
+            MOV CL, DH
+
+            JMP get_digits
+
+        ultimos_digitos:
+            ;Obtener ultimos dos digitos
+            MOV SI, 2
+            MOV CX, 0
+            MOV CH, DL
+            MOV CL, DL
+
+            JMP get_digits
+
+        get_digits:
+            SHR CL, 1 ; CL tendrá el primer digito
+            SHR CL, 1
+            SHR CL, 1
+            SHR CL, 1
+
+            SHL CH, 1 ; CH tendrá el segundo digito
+            SHL CH, 1
+            SHL CH, 1
+            SHL CH, 1
+            SHR CH, 1
+            SHR CH, 1
+            SHR CH, 1
+            SHR CH, 1
+
+            MOV WORD PTR[SI+BX], CX
+
+            CMP SI, 0
+            JE ultimos_digitos
+
+            MOV SI, 4
+            MOV WORD PTR[SI+BX], 24H ;
+
+            ; Pasar de digitos hex a ascii
+
+            MOV SI, 0
+        bucle_ascii:
+            MOV AX, 0
+            MOV AL, DS:[SI+BX]
+            CMP AL, 24H
+            JE fin_bucle_ascii
+
+            ; Comprobar si el digito se representa con una letra
+            CMP AL, 0AH
+            JE sum_letra
+            CMP AL, 0BH
+            JE sum_letra
+            CMP AL, 0CH
+            JE sum_letra
+            CMP AL, 0DH
+            JE sum_letra
+            CMP AL, 0EH
+            JE sum_letra
+            CMP AL, 0FH
+            JE sum_letra
+
+            JMP sum_numero
+
+        sum_letra:
+            ADD AL, 37H
+            JMP escribir_caracter
+
+        sum_numero:
+            ADD AL, 30H
+
+        escribir_caracter:
+            MOV DS:[SI+BX], AL
+
+            INC SI
+            JMP bucle_ascii
+
+        fin_bucle_ascii:
+
             MOV CX, BX
-            MOV WORD PTR[BX], DX
 
             POP SI DX BX AX
 
