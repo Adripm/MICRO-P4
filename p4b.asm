@@ -1,5 +1,5 @@
 ;****************************************************************************************************
-; SBM 2020. ESTRUCTURA BÁSICA DE UN PROGRAMA EN ENSAMBLADOR											*	
+; SBM 2020. ESTRUCTURA BÁSICA DE UN PROGRAMA EN ENSAMBLADOR											*
 ;																									*
 ; Autores:																							*
 ;		   Adrián Palmero Martínez																	*
@@ -12,6 +12,7 @@
 ; DATA SEGMENT DEFINITION
 DATOS   SEGMENT
         CADENA DB 10 DUP (0)
+    	CLR_SCR DB 1BH,"[2","J$"
 DATOS   ENDS
 
 ; STACK SEGMENT DEFINITION
@@ -46,11 +47,11 @@ CODIGO  SEGMENT
 
 INICIO:
 										;************************************************************
-        MOV AH, 0AH						;En el siguiente bloque de datos se solicitara por pantalla *	
+        MOV AH, 0AH						;En el siguiente bloque de datos se solicitara por pantalla *
         MOV DX, OFFSET CADENA			;la cadena a transformar.									*
         MOV CADENA[0],10				;Esta contiene un numero entero de maximo 5 digitos			*
         INT 21H							;************************************************************
-		
+
 										;************************************************************
         LEA SI, CADENA+1				;En el siguiente bloque cambiaremos el ultimo caracter de 	*
         MOV AX, 0H						;la cadena, aquel que se introduce al pulsar la tecla ENTER *
@@ -62,10 +63,17 @@ INICIO:
         MOV AH, 12H						;En el siguiente bloque bloque cargaremos en BX la direccion*
         LEA BX, CADENA					;de la cadena donde se encuentra el numero entero			*
 										;************************************************************
-										
+
 										;************************************************************
         INT 60H         				;Aqui llamaremos a la interrupcion							*
 										;************************************************************
+
+        MOV AH, 9H
+        LEA DX, CLR_SCR
+        INT 21H
+
+        MOV DX, CX
+        INT 21H
 
         MOV AX, 4C00H
         INT 21H
